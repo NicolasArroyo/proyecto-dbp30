@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+    <head>
+        {% block head %}
+        <title>A book for you - {% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+
+        <div class="banner">
+            {% block navbar %}
+            <div class="navbar">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo">
+                <ul>
+                    <li><a href="#">Homepage</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            {% endblock %}
+
+            <div class="content">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+
+            <footer>
+                {% block footer %}
+                &copy; Copyright 2010 by <a href="http://domain.invalid/">you</a>.
+                {% endblock %}
+            </footer>
+
+    </body>
+</html>
