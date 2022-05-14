@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:1234@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
@@ -66,7 +66,6 @@ def register():
 @app.route('/register/newUser', methods=['POST'])
 def registerNewUser():
     try:
-
         requestData = request.get_json()
         firstName = requestData["firstName"]
         lastName = requestData["lastName"]
@@ -93,4 +92,4 @@ def registerNewUser():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
