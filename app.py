@@ -47,6 +47,10 @@ class Author(db.Model):
     dob = db.Column(db.Date, nullable=False)
     books = db.relationship("Book", backref="author")
 
+@app.route('/')
+def base():
+    return redirect(url_for('home'))
+
 
 @app.route('/home')
 def home():

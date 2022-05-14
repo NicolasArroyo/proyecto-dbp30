@@ -2,14 +2,18 @@
 {% block title %} Home {% endblock %}
 
 {% block head %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='/styles/home.css') }}">
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles/home.css') }}">
 {% endblock %}
 
 {% block content %}
-<div class="home-content">
-    <h1>A BOOK FOR YOU</h1>
-    <p> La mejor librería del mundo </p>
-</div>
+    <div class="home-content">
+        <h1>A BOOK FOR YOU</h1>
+        <p> La mejor librería del mundo </p>
+
+        <a href='/register'>
+            <button> Register </button>
+        </a>
+    </div>
 {% endblock %}
 
