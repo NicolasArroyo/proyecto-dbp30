@@ -21,15 +21,11 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return Account.query.get(int(user_id))
 
-class User(db.Model, UserMixin):
-    __tablename__= "users"
-    id = db.Column(db.Integer, nullable=False, primary_key=True)
-    username = db.Column(db.String, nullable=False)
-    password = db.Column(db.String, nullable=False)
 
-class Account(db.Model):
+class Account(db.Model, UserMixin):
+    __tablename__= "accounts"
     id = db.Column(db.Integer, nullable=False, primary_key=True)
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
@@ -39,7 +35,7 @@ class Account(db.Model):
     is_active = db.Column(db.Boolean, nullable=False)
     email = db.Column(db.String, nullable=False)
 
-    
+    books = db.relationship("Book", backref="account")
 
 
 class Book(db.Model):
@@ -55,21 +51,18 @@ class Book(db.Model):
     due_date = db.Column(db.Date)
     borrowed_date = db.Column(db.Date)
 
-    
+    author_id = db.Column(db.Integer, db.ForeignKey("author.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("account.id"), nullable=False)
 
 
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     dob = db.Column(db.Date, nullable=False)
+    books = db.relationship("Book", backref="author")
+
+
     
-
-
-@app.route('/home')
-def home():
-    return render_template('home.html')
-
-
 class LoginForm(FlaskForm):
     username = StringField(validators=[
                            InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
@@ -79,14 +72,18 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField('Login')
 
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = Account.query.filter_by(username=form.username.data).first()
         if user:
-            password = User.query.filter_by(password=form.password.data).first()
+            password = Account.query.filter_by(password=form.password.data).first()
             if password:
                 login_user(user)
                 return redirect(url_for('home'))
@@ -98,10 +95,6 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
-
-@app.route('/register')
-def register():
-    return render_template('register.html')
 
 
 
