@@ -1,44 +1,9 @@
 {% extends "base.html" %}
 {% block title %} Home {% endblock %}
 
-
-
 {% block head %}
     {{ super() }}
-    <style>
-        .container {
-            padding: 15px;
-        }
-
-        .input {
-            width: 20%;
-            padding: 15px;
-            margin: 5px 0 22px 0;
-            display: block;
-            border: none;
-            background: #f1f1f1;
-        }
-
-        input:focus {
-            background-color: #ddd;
-            outline: none;
-        }
-
-        .registerButton {
-            width: 21.55%;
-            background-color: #04AA6D;
-            color: white;
-            padding: 15px;
-            margin: 5px 0 22px 0;
-            display: block;
-            border: none;
-            cursor: pointer;
-            opacity: 0.9;
-        }
-
-
-    </style>
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles/register.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -68,36 +33,10 @@
                 <button type="submit" class="registerButton">Register</button>
             </form>
 
+            {% block scripts %}
+            <script src="{{url_for('static', filename='/scripts/register.js')}}"></script>
+            {% endblock scripts %}
 
         </div>
-        <script>
-            const firstNameInput = document.getElementById("firstName");
-            const lastNameInput = document.getElementById("lastName");
-            const usernameInput = document.getElementById("username");
-            const passwordInput = document.getElementById("password");
-            const emailInput = document.getElementById("email");
-            document.getElementById("dataForm").onsubmit = function (event) {
-                event.preventDefault();
-                const firstName = firstNameInput.value;
-                const lastName = lastNameInput.value;
-                const username = usernameInput.value;
-                const password = passwordInput.value;
-                const email = emailInput.value;
-                fetch("/register/newUser", {
-                    method: "POST",
-                    body: JSON.stringify({
-                        "firstName": firstName,
-                        "lastName": lastName,
-                        "username": username,
-                        "password": password,
-                        "email": email,
-                    }),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-            }
-        </script>
-
     </body>
 {% endblock %}
