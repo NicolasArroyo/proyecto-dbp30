@@ -2,19 +2,56 @@
 {% block title %} Home {% endblock %}
 
 {% block head %}
-    {{ super() }}
+{{ super() }}
+<style>
+    .container {
+        padding: 15px;
+    }
 
+    .input {
+        width: 20%;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: block;
+        border: none;
+        background: #f1f1f1;
+    }
+
+    input:focus {
+        background-color: #ddd;
+        outline: none;
+    }
+
+    .loginButton {
+        width: 21.55%;
+        background-color: #04AA6D;
+        color: white;
+        padding: 15px;
+        margin: 5px 0 22px 0;
+        display: block;
+        border: none;
+        cursor: pointer;
+        opacity: 0.9;
+    }
+
+
+</style>
 {% endblock %}
 
 {% block content %}
     <body>
-    <h1>Login Page</h1>
-
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        {{ form.username }}
-        {{ form.password }}
-        {{ form.submit }}
-    </form>
-    </body>
+        <h1 style="color: white">Login Page</h1>
+        <div class = "container">
+            <form method="POST" action="">
+                {{ form.hidden_tag() }}
+                <label style="color: white" for="username"><b> Username </b></label>
+                <input type="text" placeholder="Enter your username" name="username" id="username" required
+                       class="input">
+                <label style="color: white" for="password"><b> Password </b></label>
+                <input type="password" placeholder="Enter your password" name="password" id="password" required
+                       class="input">
+                <button type="submit" class="loginButton">Login</button>
+            </form>
+        </div>   
+        </body>
 {% endblock %}
