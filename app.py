@@ -1,5 +1,4 @@
 import json
-from traceback import print_tb
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -88,6 +87,7 @@ def register():
 @app.route('/register/newUser', methods=['POST'])
 def registerNewUser():
     user_already_exists = False
+    error = False
     try:
         requestData = request.get_json()
         firstName = requestData["firstName"]
@@ -112,23 +112,35 @@ def registerNewUser():
         db.session.rollback()
     finally:
         db.session.close()
-
-    return jsonify({"user_already_exists": user_already_exists})
+    
+    if error:
+        abort(500)
+    else:
+        return jsonify({"user_already_exists": user_already_exists})
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = Account.query.filter_by(username=form.username.data).first()
-        if user is not None:
-            if user:
-                password = Account.query.filter_by(password=form.password.data).first()
-                if password:
-                    login_user(user)
-                    return redirect(url_for('home'))
+    error = False
+    try:
+        form = LoginForm()
+        if form.validate_on_submit():
+            user = Account.query.filter_by(username=form.username.data).first()
+            if user is not None:
+                if user:
+                    password = Account.query.filter_by(password=form.password.data).first()
+                    if password:
+                        login_user(user)
+                        return redirect(url_for('home'))
+    except Exception as e:
+        error = True
+        print(e)
+        print(sys.exc_info())
 
-    return render_template('login.html', form=form)
+    if error:
+        abort(500)
+    else:
+        return render_template('login.html', form=form)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
