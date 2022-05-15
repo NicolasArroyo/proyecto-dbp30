@@ -12,12 +12,13 @@
         <div class = "container">
             <form method="POST" action="">
                 {{ form.hidden_tag() }}
+
                 <label style="color: white" for="username"><b> Username </b></label>
-                <input type="text" placeholder="Enter your username" name="username" id="username" required
-                       class="input">
+                <input type="text" placeholder="Enter your username" name="username" id="username" class="input" required>
+
                 <label style="color: white" for="password"><b> Password </b></label>
-                <input type="password" placeholder="Enter your password" name="password" id="password" required
-                       class="input">
+                <input type="password" placeholder="Enter your password" name="password" id="password" class="input" required>
+
                 <button type="submit" id="loginButton">Login</button>
             </form>
         </div>

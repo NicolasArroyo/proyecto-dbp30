@@ -27,7 +27,7 @@ document.getElementById("dataForm").onsubmit = function (event) {
     }).then(function(jsonResponse) {
         console.log(jsonResponse);
         userAlreadyExists = jsonResponse["user_already_exists"];
-
+        document.getElementById("server-error").className = "hidden";
         if (userAlreadyExists) {
             document.getElementById("register-error").className = "";
         }
@@ -36,5 +36,6 @@ document.getElementById("dataForm").onsubmit = function (event) {
         }
     })
     .catch(function() {
+        document.getElementById("server-error").className = "";
     });
 }
