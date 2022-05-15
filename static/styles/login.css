@@ -16,7 +16,7 @@ input:focus {
     outline: none;
 }
 
-.registerButton {
+#loginButton {
     width: 21.55%;
     background-color: #04AA6D;
     color: white;

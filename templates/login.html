@@ -3,39 +3,7 @@
 
 {% block head %}
 {{ super() }}
-<style>
-    .container {
-        padding: 15px;
-    }
-
-    .input {
-        width: 20%;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        display: block;
-        border: none;
-        background: #f1f1f1;
-    }
-
-    input:focus {
-        background-color: #ddd;
-        outline: none;
-    }
-
-    .loginButton {
-        width: 21.55%;
-        background-color: #04AA6D;
-        color: white;
-        padding: 15px;
-        margin: 5px 0 22px 0;
-        display: block;
-        border: none;
-        cursor: pointer;
-        opacity: 0.9;
-    }
-
-
-</style>
+<link rel="stylesheet" href="{{ url_for('static', filename='/styles/login.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -50,8 +18,13 @@
                 <label style="color: white" for="password"><b> Password </b></label>
                 <input type="password" placeholder="Enter your password" name="password" id="password" required
                        class="input">
-                <button type="submit" class="loginButton">Login</button>
+                <button type="submit" id="loginButton">Login</button>
             </form>
-        </div>   
+        </div>
+
+        {% block scripts %}
+        <script src="{{url_for('static', filename='/scripts/login.js')}}"></script>
+        {% endblock scripts %}
+
         </body>
 {% endblock %}

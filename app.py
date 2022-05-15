@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
+import json
+from traceback import print_tb
+from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
@@ -85,6 +87,7 @@ def register():
 
 @app.route('/register/newUser', methods=['POST'])
 def registerNewUser():
+    user_already_exists = False
     try:
         requestData = request.get_json()
         firstName = requestData["firstName"]
@@ -95,31 +98,36 @@ def registerNewUser():
 
         q = db.session.query(Account.id).filter(Account.username == username)
         if (db.session.query(q.exists()).scalar()):
+            user_already_exists = True
             pass
         else:
             account = Account(first_name=firstName, last_name=lastName, username=username, password=password,
                               number_of_sanctions=0, is_active=True, email=email)
             db.session.add(account)
             db.session.commit()
-
     except Exception as e:
+        error = True
         print(e)
         print(sys.exc_info())
         db.session.rollback()
     finally:
         db.session.close()
-    return "success"
+
+    return jsonify({"user_already_exists": user_already_exists})
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = Account.query.filter_by(username=form.username.data).first()
-        if user:
-            password = Account.query.filter_by(password=form.password.data).first()
-            if password:
-                login_user(user)
-                return redirect(url_for('home'))
+        if user is not None:
+            if user:
+                password = Account.query.filter_by(password=form.password.data).first()
+                if password:
+                    login_user(user)
+                    return redirect(url_for('home'))
+
     return render_template('login.html', form=form)
 
 

@@ -22,5 +22,19 @@ document.getElementById("dataForm").onsubmit = function (event) {
         headers: {
             "Content-Type": "application/json"
         }
+    }).then(function(response) {
+        return response.json();
+    }).then(function(jsonResponse) {
+        console.log(jsonResponse);
+        userAlreadyExists = jsonResponse["user_already_exists"];
+
+        if (userAlreadyExists) {
+            document.getElementById("register-error").className = "";
+        }
+        else {
+            document.getElementById("register-error").className = "hidden";
+        }
     })
+    .catch(function() {
+    });
 }
