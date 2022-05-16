@@ -1,4 +1,5 @@
 import json
+from click import password_option
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -149,7 +150,47 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route("/settings")
+@login_required
+def settings():
+    return render_template("settings.html")
 
+@app.route("/settings/newPassword", methods=['POST'])
+def update_password():
+    try:
+        requestData = request.get_json()
+        username = requestData["username"]
+        new_password = requestData["newPassword"]
+        current_password = requestData["password"]
+
+        q = db.session.query(Account.id).filter(Account.username == username)
+        if (db.session.query(q.exists()).scalar()):
+            account = Account.query.filter_by(username=username, password=current_password).first()
+            account.password = new_password
+            db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+        
+    return redirect(url_for("index"))
+
+@app.route("/settings/deleteUser", methods=["POST"])
+def delete_user():
+    try:
+        requestData = request.get_json()
+        username = requestData["username"]
+        password = requestData["password"]
+        account_to_delete = Account.query.filter_by(username=username, password=password).first()
+
+        db.session.delete(account_to_delete)
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

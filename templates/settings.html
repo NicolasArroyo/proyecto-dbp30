@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %} Home {% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='/styles/settings.css') }}">
+{% endblock %}
+
+{% block content %}
+    <body>
+        <h2>Settings</h2>
+        <br>
+        <div>
+            <form id="newpassword-form">
+                <h3>Update password</h3>
+                <label for="" style="color: white">Enter your username</label>
+                <input type="text" id="username" required>
+
+                <label for="passwordToDelete" style="color: white">Enter your current password</label>
+                <input type="password" id="passwordToChange" required>
+
+                <label for="" style="color: white">Enter new password</label>
+                <input type="password" id="new-password" required>
+                <button type="submit" value="Change">Change password</button>
+            </form>
+        </div>
+
+        <div>
+            <form id="delete-form">
+                <h3>Delete account</h3>
+                <label for="usernameToDelete" style="color: white">Enter your username</label>
+                <input type="text" id="usernameToDelete" required>
+
+                <label for="passwordToDelete" style="color: white">Enter your password</label>
+                <input type="password" id="passwordToDelete" required>
+
+                <button type="submit" id="deleteAccountBtn">Delete Account</button>
+            </form>
+        </div>
+
+        {% block scripts %}
+        <script src="{{url_for('static', filename='/scripts/settings.js')}}"></script>
+        {% endblock scripts %}
+
+        </body>
+{% endblock %}
