@@ -37,6 +37,19 @@ No se utilizaron frameworks
 ## Plugins
 No se utilizaron plugins
 
+## Endopints
+'/': Index
+'/home': Muestra la pagina principal de la aplicación con los botones Log in, Sign up y Settings.
+'/register': Pagina para registrarse
+'/register/newUser': Se envia la informacion mediante un fetch de un nuevo usuario.
+'/login': Iniciar sesión
+'/logout': Cerrar sesión
+'/settings': Configuracion para cambiar nombre de usuario y password.
+'settings/newPassword': Se envia la informacion mediante un fetch de una nueva password.
+'settings/deleteUser':  Se envia la informacion de la eliminacion de un usuario.
+
+## Forma de autenticacion
+
 ## Host
 localhost:5432
 
