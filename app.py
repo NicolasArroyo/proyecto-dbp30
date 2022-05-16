@@ -10,7 +10,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:hola@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
@@ -37,6 +37,15 @@ class Account(db.Model, UserMixin):
     email = db.Column(db.String, nullable=False)
 
     books = db.relationship("Book", backref="account")
+
+    def __init__ (self, first_name : str, last_name : str, username : str, password : str, number_of_sanctions : int, is_active : bool, email : str):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.username = username
+        self.password = password
+        self.number_of_sanctions = number_of_sanctions
+        self.is_active = is_active
+        self.email = email
 
 
 class Book(db.Model):
