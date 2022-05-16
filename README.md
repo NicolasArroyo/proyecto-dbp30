@@ -49,7 +49,7 @@ No se utilizaron plugins
 - 'settings/deleteUser':  Se envia la informacion de la eliminacion de un usuario.
 
 ## Forma de autenticacion
-Usamos Flask-Login para poder manejar y authenticar la sesion actual del usuario. Con Flask-WTForms mandamos un formulario para que el backend se comunique con el base de datos.
+Usamos Flask-Login para poder manejar y authenticar la sesion actual del usuario. Con Flask-WTForms mandamos un formulario para que el backend se comunique con la base de datos.
 
 ## Host
 localhost:5432
