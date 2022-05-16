@@ -165,40 +165,50 @@ def settings():
 
 @app.route("/settings/newPassword", methods=['POST'])
 def update_password():
+    correct_username_password = True
     try:
         requestData = request.get_json()
         username = requestData["username"]
         new_password = requestData["newPassword"]
         current_password = requestData["password"]
-
-        q = db.session.query(Account.id).filter(Account.username == username)
+        q = db.session.query(Account.id).filter(Account.username == username, Account.password == current_password)
         if (db.session.query(q.exists()).scalar()):
             account = Account.query.filter_by(username=username, password=current_password).first()
             account.password = new_password
             db.session.commit()
+        else:
+            correct_username_password = False
     except:
         db.session.rollback()
     finally:
         db.session.close()
+    
+    print(correct_username_password )
         
-    return redirect(url_for("index"))
+    # return redirect(url_for("index"))
+    return jsonify({"correctUsernamePassword": correct_username_password})
 
 @app.route("/settings/deleteUser", methods=["POST"])
 def delete_user():
+    correct_username_password = True
     try:
         requestData = request.get_json()
         username = requestData["username"]
         password = requestData["password"]
         account_to_delete = Account.query.filter_by(username=username, password=password).first()
 
-        db.session.delete(account_to_delete)
-        db.session.commit()
+        q = db.session.query(Account.id).filter(Account.username == username, Account.password == password)
+        if (db.session.query(q.exists()).scalar()):
+            db.session.delete(account_to_delete)
+            db.session.commit()
+        else:
+            correct_username_password = False
     except:
         db.session.rollback()
     finally:
         db.session.close()
     
-    return redirect(url_for("index"))
+    return jsonify({"correctUsernamePassword": correct_username_password})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

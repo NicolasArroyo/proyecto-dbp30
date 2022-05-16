@@ -20,6 +20,20 @@ document.getElementById("newpassword-form").onsubmit = function(e) {
         headers: {
             'Content-Type': 'application/json'
         }
+    }).then(function(response) {
+        return response.json();
+    }).then(function(jsonResponse) {
+        correctUsernamePassword = jsonResponse["correctUsernamePassword"];
+        document.getElementById("server-error").className = "hidden";
+        if (correctUsernamePassword) {
+            document.getElementById("username-password-error").className = "hidden";
+        }
+        else {
+            document.getElementById("username-password-error").className = "";
+        }
+    })
+    .catch(function() {
+        document.getElementById("server-error").className = "";
     });
 }
 
@@ -40,5 +54,20 @@ document.getElementById("delete-form").onsubmit = function (e) {
         headers: {
             'Content-Type': 'application/json'
         }
+    }).then(function(response) {
+        return response.json();
+    }).then(function(jsonResponse) {
+        correctUsernamePassword = jsonResponse["correctUsernamePassword"];
+        console.log(correctUsernamePassword)
+        document.getElementById("server-error").className = "hidden";
+        if (correctUsernamePassword) {
+            document.getElementById("username-password-error-delete").className = "hidden";
+        }
+        else {
+            document.getElementById("username-password-error-delete").className = "";
+        }
     })
+    .catch(function() {
+        document.getElementById("server-error").className = "";
+    });
 }
