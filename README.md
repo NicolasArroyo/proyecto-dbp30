@@ -30,6 +30,7 @@ Ser la librería líder en el Perú en la venta y distribución de libros de tex
 - sys
 - pickle
 - pytest
+- jinja
 
 ## Frameworks
 No se utilizaron frameworks
