@@ -4,6 +4,11 @@
     font-family: sans-serif;
 }
 
+img {
+    border-radius: 8px;
+    position: relative;
+    right: 80px;
+}
 
 .banner {
     width: 100%;

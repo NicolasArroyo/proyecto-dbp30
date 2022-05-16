@@ -1,5 +1,4 @@
 import json
-from click import password_option
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -10,7 +9,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:hola@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
