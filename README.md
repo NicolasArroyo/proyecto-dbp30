@@ -37,7 +37,7 @@ No se utilizaron frameworks
 ## Plugins
 No se utilizaron plugins
 
-## Endpints
+## Endpoints
 - '/': Index
 - '/home': Muestra la pagina principal de la aplicación con los botones Log in, Sign up y Settings.
 - '/register': Pagina para registrarse
