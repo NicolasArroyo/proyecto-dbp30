@@ -27,6 +27,7 @@ document.getElementById("newpassword-form").onsubmit = function(e) {
         document.getElementById("server-error").className = "hidden";
         if (correctUsernamePassword) {
             document.getElementById("username-password-error").className = "hidden";
+            window.location.href = "/home";
         }
         else {
             document.getElementById("username-password-error").className = "";
@@ -62,6 +63,7 @@ document.getElementById("delete-form").onsubmit = function (e) {
         document.getElementById("server-error").className = "hidden";
         if (correctUsernamePassword) {
             document.getElementById("username-password-error-delete").className = "hidden";
+            window.location.href = "/home";
         }
         else {
             document.getElementById("username-password-error-delete").className = "";

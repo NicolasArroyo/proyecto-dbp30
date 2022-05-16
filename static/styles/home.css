@@ -7,3 +7,14 @@
     color: #fff;
 }
 
+button {
+    width: 21.55%;
+    background-color: #04AA6D;
+    color: white;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+
+    border: none;
+    cursor: pointer;
+    opacity: 0.9;
+}

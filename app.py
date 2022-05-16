@@ -9,7 +9,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:1234@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
@@ -184,9 +184,10 @@ def update_password():
         db.session.close()
     
     print(correct_username_password )
-        
+
     # return redirect(url_for("index"))
     return jsonify({"correctUsernamePassword": correct_username_password})
+
 
 @app.route("/settings/deleteUser", methods=["POST"])
 def delete_user():
@@ -207,7 +208,7 @@ def delete_user():
         db.session.rollback()
     finally:
         db.session.close()
-    
+
     return jsonify({"correctUsernamePassword": correct_username_password})
 
 if __name__ == "__main__":

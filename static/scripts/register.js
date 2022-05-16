@@ -33,6 +33,7 @@ document.getElementById("dataForm").onsubmit = function (event) {
         }
         else {
             document.getElementById("register-error").className = "hidden";
+            window.location.href = "/home";
         }
     })
     .catch(function() {
