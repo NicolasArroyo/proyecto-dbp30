@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+    <head>
+        {% block head %}
+        <title>A book for you - {% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/error_base.css') }}">
+        {% endblock %}
+    </head>
+    <body>
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

@@ -37,6 +37,15 @@ class Account(db.Model, UserMixin):
 
     books = db.relationship("Book", backref="account")
 
+    def __init__ (self, first_name : str, last_name : str, username : str, password : str, number_of_sanctions : int, is_active : bool, email : str):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.username = username
+        self.password = password
+        self.number_of_sanctions = number_of_sanctions
+        self.is_active = is_active
+        self.email = email
+
 
 class Book(db.Model):
     id = db.Column(db.Integer, nullable=False, primary_key=True)
@@ -149,7 +158,74 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route("/settings")
+@login_required
+def settings():
+    return render_template("settings.html")
 
+@app.route("/settings/newPassword", methods=['POST'])
+def update_password():
+    correct_username_password = True
+    try:
+        requestData = request.get_json()
+        username = requestData["username"]
+        new_password = requestData["newPassword"]
+        current_password = requestData["password"]
+        q = db.session.query(Account.id).filter(Account.username == username, Account.password == current_password)
+        if (db.session.query(q.exists()).scalar()):
+            account = Account.query.filter_by(username=username, password=current_password).first()
+            account.password = new_password
+            db.session.commit()
+        else:
+            correct_username_password = False
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+
+    return jsonify({"correctUsernamePassword": correct_username_password})
+
+
+@app.route("/settings/deleteUser", methods=["POST"])
+def delete_user():
+    correct_username_password = True
+    try:
+        requestData = request.get_json()
+        username = requestData["username"]
+        password = requestData["password"]
+        account_to_delete = Account.query.filter_by(username=username, password=password).first()
+
+        q = db.session.query(Account.id).filter(Account.username == username, Account.password == password)
+        if (db.session.query(q.exists()).scalar()):
+            db.session.delete(account_to_delete)
+            db.session.commit()
+        else:
+            correct_username_password = False
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    
+    return jsonify({"correctUsernamePassword": correct_username_password})
+
+
+# Error handling
+@app.errorhandler(401)
+def unauthorized(e):
+    return render_template("401.html")
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template("403.html")
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template("404.html")
+
+@app.errorhandler(500)
+def server_error(e):
+    app.logger.error(f"Server error: {e}, route: {request.url}")
+    return render_template("500.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
