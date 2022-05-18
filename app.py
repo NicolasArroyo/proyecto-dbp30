@@ -1,9 +1,11 @@
+from crypt import methods
 import json
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
+from importlib_metadata import method_cache
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 import sys
@@ -60,8 +62,8 @@ class Book(db.Model):
     due_date = db.Column(db.Date)
     borrowed_date = db.Column(db.Date)
 
-    author_id = db.Column(db.Integer, db.ForeignKey("author.id"), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("account.id"), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("author.id"), nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("account.id"), nullable=True)
 
 
 class Author(db.Model):
@@ -82,7 +84,31 @@ class LoginForm(FlaskForm):
 
 @app.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('home.html', books=Book.query.order_by("id").all())
+
+@app.route("/home/search", methods=["POST"])
+def search():
+    error = False
+    response = []
+    try:
+        # q = db.session.query(Book.id).filter(Book.title == to_search)
+        # if (db.session.query(q.exists()).scalar()):
+        #     book_name = Book.query.filter_by(title=to_search).first()
+        #     print(book_name)
+        # Obtain all the books from the database and send it to js
+        books = Book.query.order_by("id").all()
+        for book in books:
+            response.append({"id": book.id, "title": book.title})
+        print(response)
+    except Exception as e:
+        error = True
+        print(e)
+        print(sys.exc_info())
+
+    if error:
+        abort(500)
+    else:
+        return jsonify(response)
 
 @app.route('/')
 def index():
@@ -207,7 +233,6 @@ def delete_user():
         db.session.close()
     
     return jsonify({"correctUsernamePassword": correct_username_password})
-
 
 # Error handling
 @app.errorhandler(401)

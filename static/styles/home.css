@@ -7,7 +7,7 @@
     color: #fff;
 }
 
-button {
+a button {
     width: 21.55%;
     background-color: #04AA6D;
     color: white;
@@ -17,4 +17,52 @@ button {
     border: none;
     cursor: pointer;
     opacity: 0.9;
+}
+
+a button:hover {
+    background: #038455;
+}
+
+#search-form {
+    margin: auto;
+    max-width: 350px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Style the search field */
+#search-form input[type=text] {
+    padding: 10px;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    background: #f1f1f1;
+}
+
+/* Style the submit button */
+#search-form button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #04AA6D;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    /* Prevent double borders */
+    cursor: pointer;
+}
+
+#search-form button:hover {
+    background: #038455;
+}
+
+/* Clear floats */
+#search-form::after {
+    content: "";
+    clear: both;
+    display: table;
 }

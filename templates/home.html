@@ -4,6 +4,7 @@
 {% block head %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='/styles/home.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block content %}
@@ -21,8 +22,28 @@
         <a href="/settings">
             <button> Settings</button>
         </a>
+
+        <div>
+            <form id="search-form">
+                <input type="text" placeholder="Search..." name="search" id="to-search" required>
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </form>
+        </div>
+
+        <div class="book-cards" data-book-cards-container>
+            
+        </div>
+        <template data-book-template>
+          <div class="card">
+            <div class="header" data-header></div>
+            <div class="body" data-body></div>
+          </div>
+        </template>
     </div>
 
+    {% block scripts %}
+    <script src="{{url_for('static', filename='/scripts/home.js')}}"></script>
+    {% endblock scripts %}
 
 {% endblock %}
 
