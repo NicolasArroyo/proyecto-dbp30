@@ -7,7 +7,7 @@
     color: #fff;
 }
 
-.home-content a button {
+a button {
     width: 21.55%;
     background-color: #04AA6D;
     color: white;
@@ -19,7 +19,7 @@
     opacity: 0.9;
 }
 
-.home-content a button:hover {
+a button:hover {
     background: #038455;
 }
 
@@ -38,8 +38,26 @@
     font-size: 17px;
     border: 1px solid grey;
     float: left;
-    width: 100%;
+    width: 80%;
     background: #f1f1f1;
+}
+
+/* Style the submit button */
+#search-form button {
+    float: left;
+    width: 20%;
+    padding: 10px;
+    background: #04AA6D;
+    color: white;
+    font-size: 17px;
+    border: 1px solid grey;
+    border-left: none;
+    /* Prevent double borders */
+    cursor: pointer;
+}
+
+#search-form button:hover {
+    background: #038455;
 }
 
 /* Clear floats */
@@ -56,15 +74,6 @@
 /* book_cards */
 input {
   font-size: 1rem;
-}
-
-.search-wrapper input{
-  padding: 10px;
-  font-size: 17px;
-  border: 1px solid grey;
-  float:initial;
-  width: 20%;
-  background: #f1f1f1;
 }
 
 .book-cards {

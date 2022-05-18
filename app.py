@@ -84,7 +84,7 @@ class LoginForm(FlaskForm):
 
 @app.route('/home')
 def home():
-    return render_template('home.html', books=Book.query.order_by("id").all())
+    return render_template('home.html')
 
 @app.route("/home/search", methods=["GET"])
 def search():
@@ -106,16 +106,20 @@ def search():
     else:
         return jsonify(response)
 
-@app.route('/')
+@app.route("/home/rent/<book_id>", methods=["GET"])
+def rent_book(book_id):
+    return redirect(url_for("rent"))
+
+@app.route("/")
 def index():
     return redirect(url_for('home'))
 
-@app.route('/register')
+@app.route("/register")
 def register():
     return render_template('register.html')
 
 
-@app.route('/register/newUser', methods=['POST'])
+@app.route("/register/newUser", methods=['POST'])
 def registerNewUser():
     user_already_exists = False
     error = False
@@ -150,7 +154,7 @@ def registerNewUser():
         return jsonify({"user_already_exists": user_already_exists})
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route("/login", methods=['GET', 'POST'])
 def login():
     error = False
     try:
@@ -174,7 +178,7 @@ def login():
         return render_template('login.html', form=form)
 
 
-@app.route('/logout', methods=['GET', 'POST'])
+@app.route("/logout", methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()

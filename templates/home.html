@@ -23,26 +23,24 @@
             <button> Settings</button>
         </a>
 
-        <div>
-            <form id="search-form">
-                <input type="text" placeholder="Search..." name="search" id="to-search" required>
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
+        <div class="search-wrapper">
+            <input type="search" placeholder="Search..." name="search" id="to-search" required>
         </div>
 
         <div class="book-cards" data-book-cards-container id="card">
-
         </div>
+
         <template data-book-template>
           <div class="card">
             <div class="header" data-header></div>
             <div class="body" data-body></div>
+            <button type="submit" class="buy-button" data-rent-button>Rent</button>
           </div>
         </template>
     </div>
 
     {% block scripts %}
-    <script src="{{url_for('static', filename='/scripts/home.js')}}"></script>
+        <script src="{{url_for('static', filename='/scripts/home.js')}}" defer></script>
     {% endblock scripts %}
 
 {% endblock %}
