@@ -27,6 +27,16 @@ toSearchInput.addEventListener("input", e => {
         && !(toSearch.trim().length === 0);  // check if toSearch is full of spaces
         book.element.classList.toggle("hide", !isVisible);
     })
+
+    // // Add a book to the shopping cart
+    // books.forEach(book => {
+    //     if (book.element.classList == "card") {
+    //         console.log(book["element"].querySelector("[data-rent-button]").checked);
+    //         if (book["element"].querySelector("[data-rent-button]").checked) {
+    //             console.log(true);
+    //         }
+    //     }
+    // })
 })
 
 fetch("/home/search", {
@@ -48,6 +58,33 @@ fetch("/home/search", {
             bookCardContainer.append(card);
         }
 
-        return { id: book.id, title: book.title, element: card };
+        return {id: book.id, title: book.title, element: card};
     })
 });
+
+// Add a book to the shopping cart
+document.getElementById('submit-rent').onsubmit = function(e) {
+    e.preventDefault();
+    idBooksToRent = []
+    
+    books.forEach(book => {
+        if (book.element.classList == "card") {
+            if (book["element"].querySelector("[data-rent-button]").checked) {
+                idBooksToRent.push(book["id"]);
+            }
+        }
+    })
+
+    fetch('/home/rent', {
+        method: "POST",
+        body: JSON.stringify({
+            "idBooksToRent": idBooksToRent
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(function(response) {
+        return response.json();
+    }).then(function(jsonResponse) {
+    });
+} 

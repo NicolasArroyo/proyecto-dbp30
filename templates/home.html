@@ -27,20 +27,29 @@
             <input type="search" placeholder="Search..." name="search" id="to-search" required>
         </div>
 
-        <div class="book-cards" data-book-cards-container id="card">
+        <br><br>
+
+        <div id="shopping-cart">
+            <h2>Shopping Cart</h2>
+            <div class="book-cards" data-book-cards-container id="card">
+            </div>
+            <br>
+            <form id="submit-rent">
+                <button type="submit">Rent</button>
+            </form>
         </div>
 
         <template data-book-template>
           <div class="card">
             <div class="header" data-header></div>
             <div class="body" data-body></div>
-            <button type="submit" class="buy-button" data-rent-button>Rent</button>
+            Rent <input type="checkbox" class="rent-button" data-rent-button>
           </div>
         </template>
     </div>
 
     {% block scripts %}
-        <script src="{{url_for('static', filename='/scripts/home.js')}}" defer></script>
+        <script src="{{url_for('static', filename='/scripts/home.js')}}"></script>
     {% endblock scripts %}
 
 {% endblock %}
