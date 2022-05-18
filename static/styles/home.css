@@ -66,3 +66,7 @@ a button:hover {
     clear: both;
     display: table;
 }
+
+.hide {
+    display: none;
+}

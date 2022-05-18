@@ -1,3 +1,24 @@
+function cardIsInCardContainer(card) {
+    const bookCardContainer = document.querySelector("[data-book-cards-container]");
+
+    for (var i = 0; i < bookCardContainer.children.length; i++) {
+        child = bookCardContainer.children[i];
+
+        if (child.querySelector("[data-body]").textContent == card.querySelector("[data-body]").textContent ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+let books = []
+
+books.forEach(book => {
+    const isVisible = book.title.toLowerCase().includes(toSearch)
+    book.element.classList.toggle("hide", !isVisible);
+})
+
 document.getElementById("search-form").onsubmit = function(e) {
     e.preventDefault();
     const toSearchInput = document.getElementById("to-search");
@@ -7,32 +28,21 @@ document.getElementById("search-form").onsubmit = function(e) {
     const bookCardContainer = document.querySelector("[data-book-cards-container]");
 
     fetch("/home/search", {
-        method: 'POST',
-        body: JSON.stringify({
-            "toSearch": toSearch
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
+        method: 'GET'
     }).then(function(response) {
         return response.json();
     }).then(function(jsonResponse) {
         books = jsonResponse.map(book => {
-            console.log(book);
             const card = bookCardTemplate.content.cloneNode(true).children[0];
             const header = card.querySelector("[data-header]");
             const body = card.querySelector("[data-body]");
             header.textContent = book.id;
             body.textContent = book.title;
-            bookCardContainer.append(card);
-            return { id: book.id, title: book.title, element: card };
-        })
-        console.log(books);
 
-        books.forEach(book => {
-          const isVisible = book.title.toLowerCase().includes(toSearch)
-          console.log(isVisible);
-          book.element.classList.toggle("hide", !isVisible);
+            if (!cardIsInCardContainer(card)) {
+                bookCardContainer.append(card);
+            }
+            return { id: book.id, title: book.title, element: card };
         })
     });
 }

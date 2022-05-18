@@ -86,15 +86,11 @@ class LoginForm(FlaskForm):
 def home():
     return render_template('home.html', books=Book.query.order_by("id").all())
 
-@app.route("/home/search", methods=["POST"])
+@app.route("/home/search", methods=["GET"])
 def search():
     error = False
     response = []
     try:
-        # q = db.session.query(Book.id).filter(Book.title == to_search)
-        # if (db.session.query(q.exists()).scalar()):
-        #     book_name = Book.query.filter_by(title=to_search).first()
-        #     print(book_name)
         # Obtain all the books from the database and send it to js
         books = Book.query.order_by("id").all()
         for book in books:
