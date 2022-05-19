@@ -4,14 +4,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms import StringField, PasswordField
+from wtforms.validators import InputRequired, ValidationError
+from flask_bcrypt import Bcrypt
 import sys
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:1234@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
+Bcrypt = Bcrypt(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -78,7 +80,22 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[
                              InputRequired()])
 
-    submit = SubmitField('Login')
+class RegisterForm(FlaskForm):
+    firstName = StringField(validators=[
+                           InputRequired()])
+    lastName = StringField(validators=[
+                           InputRequired()])
+    username = StringField(validators=[
+                           InputRequired()])
+    password = PasswordField(validators=[
+                             InputRequired()])
+    email = StringField(validators=[
+                           InputRequired()])
+
+    def validate_username(self, username):
+        existing_user_username = Account.query.filter_by(username=username.data).first()
+        if existing_user_username:
+            raise ValidationError('That username already exists. Please choose a different one.')
 
 @app.route('/home')
 def home():
@@ -93,39 +110,30 @@ def register():
     return render_template('register.html')
 
 
-@app.route('/register/newUser', methods=['POST'])
-def registerNewUser():
-    user_already_exists = False
+@app.route('/register', methods=['GET', 'POST'])
+def register():
     error = False
     try:
-        requestData = request.get_json()
-        firstName = requestData["firstName"]
-        lastName = requestData["lastName"]
-        username = requestData["username"]
-        password = requestData["password"]
-        email = requestData["email"]
-
-        q = db.session.query(Account.id).filter(Account.username == username)
-        if (db.session.query(q.exists()).scalar()):
-            user_already_exists = True
-            pass
-        else:
-            account = Account(first_name=firstName, last_name=lastName, username=username, password=password,
-                              number_of_sanctions=0, is_active=True, email=email)
-            db.session.add(account)
+        form = RegisterForm()
+        if form.validate_on_submit():
+            hashed_password = Bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            new_user = Account(firstName=form.firstName.data, 
+            lastName=form.lastName.data, 
+            number_of_sanctions=0,is_active=True,
+            username=form.username.data, 
+            password=hashed_password, 
+            email=form.email.data)
+            db.session.add(new_user)
             db.session.commit()
+            return redirect(url_for('login'))
     except Exception as e:
         error = True
         print(e)
         print(sys.exc_info())
-        db.session.rollback()
-    finally:
-        db.session.close()
-    
     if error:
         abort(500)
     else:
-        return jsonify({"user_already_exists": user_already_exists})
+        return render_template('register.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -137,8 +145,7 @@ def login():
             user = Account.query.filter_by(username=form.username.data).first()
             if user is not None:
                 if user:
-                    password = Account.query.filter_by(password=form.password.data).first()
-                    if password:
+                    if Bcrypt.check_password_hash(user.password, form.password.data):
                         login_user(user)
                         return redirect(url_for('home'))
     except Exception as e:
