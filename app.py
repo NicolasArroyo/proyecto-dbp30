@@ -2,6 +2,7 @@ from ast import Sub
 from crypt import methods
 import json
 import re
+from typing import final
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -109,12 +110,32 @@ def search():
 
 @app.route("/home/rent", methods=["POST"])
 def rent():
-    requestData = request.get_json()
-    id_rent_books = requestData["idBooksToRent"]
-    # Ahora que ya tenemos los ids de los libros por rentar seria cuestion
-    # de agregarlos a la cuenta de la persona que desea comprar
-    # Mandar mensaje en caso su renta haya sido existosa
-    # Mandar un mensaje en caso no haya sido posible hacer la renta porque no esta logeado o el libro ya esta rentado
+    error = False
+    is_authenticated = False
+    try:
+        requestData = request.get_json()
+        id_rent_books = requestData["idBooksToRent"]
+        # Ahora que ya tenemos los ids de los libros por rentar seria cuestion
+        # de agregarlos a la cuenta de la persona que desea comprar
+        # Mandar mensaje en caso su renta haya sido existosa
+        # Mandar un mensaje en caso no haya sido posible hacer la renta porque no esta logeado o el libro ya esta rentado
+        if current_user.is_authenticated:
+            is_authenticated = True
+            if len(id_rent_books) != 0:
+                for id in id_rent_books:
+                    book = Book.query.get(int(id))
+                    print(f"Book to add: {book}")
+                    book.user_id = int(current_user.id)
+            db.session.commit()
+    except Exception as e:
+        error = True
+        print(e)
+        print(sys.exc_info())
+        db.session.rollback()
+    finally:
+        db.session.close()
+        
+        
     return jsonify({"Hola": "Chau"})
 
 @app.route("/")
