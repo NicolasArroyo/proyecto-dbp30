@@ -27,16 +27,6 @@ toSearchInput.addEventListener("input", e => {
         && !(toSearch.trim().length === 0);  // check if toSearch is full of spaces
         book.element.classList.toggle("hide", !isVisible);
     })
-
-    // // Add a book to the shopping cart
-    // books.forEach(book => {
-    //     if (book.element.classList == "card") {
-    //         console.log(book["element"].querySelector("[data-rent-button]").checked);
-    //         if (book["element"].querySelector("[data-rent-button]").checked) {
-    //             console.log(true);
-    //         }
-    //     }
-    // })
 })
 
 fetch("/home/search", {
@@ -49,16 +39,18 @@ fetch("/home/search", {
     books = jsonResponse.map(book => {
         const card = bookCardTemplate.content.cloneNode(true).children[0];
         const header = card.querySelector("[data-header]");
+        const price = card.querySelector("[data-price]");
         const body = card.querySelector("[data-body]");
 
-        header.textContent = book.title;
+        header.textContent = book.title
+        price.textContent = "S/ " + book.price;
         body.textContent = book.id;
 
         if (!cardIsInCardContainer(card)) {
             bookCardContainer.append(card);
         }
 
-        return {id: book.id, title: book.title, element: card};
+        return {id: book.id, title: book.title, price: book.price, element: card};
     })
 });
 

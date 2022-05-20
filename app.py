@@ -140,7 +140,7 @@ def search():
         # Obtain all the books from the database and send it to js
         books = Book.query.order_by("id").all()
         for book in books:
-            response.append({"id": book.id, "title": book.title})
+            response.append({"id": book.id, "title": book.title, "price": book.price})
     except Exception as e:
         error = True
         print(e)
@@ -169,8 +169,10 @@ def rent():
             if len(id_rent_books) != 0:
                 for id in id_rent_books:
                     book = Book.query.get(int(id))
+                    # Success
                     if book.user_id == None:
                         book.user_id = int(current_user.id)
+                        book.borrowed_date = date.today()
                         succesfull_rent = True
                     elif book.user_id == current_user.id:
                         already_rented_by_current_user = True
