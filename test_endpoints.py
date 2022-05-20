@@ -18,15 +18,17 @@ def test_Account_Model():
     assert account.first_name == 'matias';
     assert account.last_name == 'castro';
     assert account.is_admin == FALSE;
+def test_Author_Moder():
+    author = Author('Gleen Black', 1988-12-12, 123)
+    assert author.name == 'Gleen Black'
+    assert author.dob == 1988-12-12
 def test_Book_Model():
-    book = Book('AJ123', 'El Capo', 'Gleen Black', 'Español', 125, 2002-12-12, 'Cosmo Editores', 75, 1872-12-12, 1971-12-12)
+    book = Book('AJ123', 'El Capo', 'Gleen Black', 'Español', 125, 2002-12-12, 'Cosmo Editores', 75, 1872-12-12, 1971-12-12, 123)
     assert book.ISBN == 'AJ123'
     assert book.language == 'Español'
     assert book.publication_date == 2002-12-12
-def test_Author_Moder():
-    author = Author('Gleen Black', 1988-12-12)
-    assert author.name == 'Gleen Black'
-    assert author.dob == 1988-12-12
+    assert book.author_id == 123
+
 
 
  
@@ -42,7 +44,7 @@ class Flask_Tets_Routes(unittest.TestCase):
         tester = app.test_client(self)
         response = tester.get("/home/search")
         assert response.status_code == 200
-        self.assertEqual(response.content_type, "application/json")
+        self.assertEqual(response.content_type, "text/html; charset=utf-8")
     
     def test_home_rent(self):
         tester = app.test_client(self)

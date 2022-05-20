@@ -11,7 +11,7 @@ from flask_bcrypt import Bcrypt
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:hola@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 Bcrypt = Bcrypt(app)
@@ -72,7 +72,7 @@ class Book(db.Model):
 
     def __init__(self, ISBN : str, title : str, subject : str, language : str, 
                 number_of_pages : int, publication_date : date, publisher : str, price : int, 
-                due_date : date, borrowed_date : date, author_id : int):
+                due_date : date, borrowed_date : date, author_id = int):
         self.ISBN = ISBN
         self.title = title
         self.subject = subject
@@ -91,9 +91,10 @@ class Author(db.Model):
     dob = db.Column(db.Date, nullable=False)
     books = db.relationship("Book", backref="author")
 
-    def __init__(self, name : str, dob : date):
+    def __init__(self, name : str, dob : date, id: int):
         self.name = name
         self.dob = dob
+        self.id = id
 
 
 class LoginForm(FlaskForm):
