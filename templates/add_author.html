@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %} Add an author {% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='/styles/add_author.css') }}">
+{% endblock %}
+
+{% block content %}
+    <body>
+        <h1 style="color: white"> Add an author </h1>
+        <div class="container">
+            <form id="addAuthorForm">
+                <label style="color: white" for="name"><b> Author's name </b></label>
+                <input type="text" placeholder="Enter the author's name" name="name" id="name" required
+                       class="input">
+
+                <label style="color: white" for="dob"><b> Date of birth </b></label>
+                <input type="date" placeholder="Enter the date of birth" name="dob" id="dob" required class="input">
+
+                <div id="add-author-error" class="hidden">
+                    <p style="color: red; font-size: 24px;">Author already exists!</p>
+                </div>
+
+                <button type="submit" class="addAuthorButton">Add author</button>
+
+                <div id="server-error" class="hidden">
+                    <p style="color: red; font-size: 24px;">Something went wrong! Try it later!</p>
+                </div>
+
+            </form>
+
+            {% block scripts %}
+                <script src="{{ url_for('static', filename='/scripts/add_author.js') }}"></script>
+            {% endblock scripts %}
+
+        </div>
+    </body>
+{% endblock %}

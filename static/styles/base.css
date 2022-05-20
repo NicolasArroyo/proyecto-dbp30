@@ -15,7 +15,9 @@ img {
     height: 100vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("/static/images/libreria_fondo.jpg");
     background-size: cover;
-    background-position: center;
+    background-position: center center;
+    background-repeat: no-repeat;
+    
 }
 
 .navbar {
