@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -10,7 +11,7 @@ from flask_bcrypt import Bcrypt
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:hola@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 Bcrypt = Bcrypt(app)
@@ -69,12 +70,29 @@ class Book(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("author.id"), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("account.id"), nullable=True)
 
+    def __init__(self, ISBN : int, title : str, subject : str, language : str, 
+                number_of_pages : int, publication_date : date, publisher : str, price : int, 
+                due_date : date, borrowed_date : date):
+        self.ISBN = ISBN
+        self.title = title
+        self.subject = subject
+        self.language = language
+        self.number_of_pages = number_of_pages
+        self.publication_date = publication_date
+        self.publisher = publisher
+        self.price = price
+        self.due_date = due_date
+        self.borrowed_date = borrowed_date
 
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     dob = db.Column(db.Date, nullable=False)
     books = db.relationship("Book", backref="author")
+
+    def __init__(self, name : str, dob : date):
+        self.name = name
+        self.dob = dob
 
 
 class LoginForm(FlaskForm):
@@ -89,7 +107,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     firstName = StringField(validators=[
                            InputRequired()])
-    lastName = StringField(validators=[
+    lastName = StringField(validators=[ 
                            InputRequired()])
     username = StringField(validators=[
                            InputRequired()])
