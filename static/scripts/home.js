@@ -86,5 +86,20 @@ document.getElementById('submit-rent').onsubmit = function(e) {
     }).then(function(response) {
         return response.json();
     }).then(function(jsonResponse) {
+        // Check if there are books and show the message
+        if (jsonResponse["noBooks"] === true) {
+            document.getElementById("no-books-error").className = "";
+        }
+        else {
+            document.getElementById("no-books-error").className = "hidden";
+        }
+
+        // Check if the rent was succesfull or not
+        if (jsonResponse["succesfullRent"] === true) {
+            console.log("Your books have been rented succcesfully.")
+        }
+        else {
+            console.log("This book is already rented")
+        }
     });
 } 

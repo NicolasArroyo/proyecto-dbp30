@@ -19,7 +19,7 @@ document.getElementById("addBookForm").onsubmit = function (event) {
     const publicationDate = publicationDateInput.value;
     const publisher = publisherInput.value;
     const price = priceInput.value;
-    const author_id = author.value;
+    const author_id = authorOption.value;
 
     fetch("/add_book/new", {
         method: "POST",

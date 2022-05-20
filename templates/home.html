@@ -10,7 +10,7 @@
 {% block content %}
     <div class="home-content">
         <h1>A BOOK FOR YOU</h1>
-        <p> La mejor librería del mundo </p>
+        <p> The best bookstore in the world </p>
         {% if current_user.is_authenticated == False %}
             <a href='/register'>
                 <button> Register</button>
@@ -44,6 +44,12 @@
                 <form id="submit-rent">
                     <button type="submit">Rent</button>
                 </form>
+            </div>
+
+            <div id="error-messages">
+                <div id="no-books-error" class="hidden">
+                    <p style="color: red; font-size: 24px;">There are no books to rent!</p>
+                </div>
             </div>
 
             <template data-book-template>

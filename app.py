@@ -11,7 +11,7 @@ from flask_bcrypt import Bcrypt
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:hola@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 Bcrypt = Bcrypt(app)
@@ -56,7 +56,7 @@ class Account(db.Model, UserMixin):
 
 class Book(db.Model):
     id = db.Column(db.Integer, nullable=False, primary_key=True)
-    ISBN = db.Column(db.Integer, nullable=False)
+    ISBN = db.Column(db.String, nullable=False)
     title = db.Column(db.String, nullable=False)
     subject = db.Column(db.String, nullable=False)
     language = db.Column(db.String, nullable=False)
@@ -70,9 +70,9 @@ class Book(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey("author.id"), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("account.id"), nullable=True)
 
-    def __init__(self, ISBN : int, title : str, subject : str, language : str, 
+    def __init__(self, ISBN : str, title : str, subject : str, language : str, 
                 number_of_pages : int, publication_date : date, publisher : str, price : int, 
-                due_date : date, borrowed_date : date):
+                due_date : date, borrowed_date : date, author_id : int):
         self.ISBN = ISBN
         self.title = title
         self.subject = subject
@@ -83,6 +83,7 @@ class Book(db.Model):
         self.price = price
         self.due_date = due_date
         self.borrowed_date = borrowed_date
+        self.author_id = author_id
 
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -154,7 +155,8 @@ def search():
 @app.route("/home/rent", methods=["POST"])
 def rent():
     error = False
-    is_authenticated = False
+    no_books = True
+    succesfull_rent = False
     try:
         requestData = request.get_json()
         id_rent_books = requestData["idBooksToRent"]
@@ -163,13 +165,17 @@ def rent():
         # Mandar mensaje en caso su renta haya sido existosa
         # Mandar un mensaje en caso no haya sido posible hacer la renta porque no esta logeado o el libro ya esta rentado
         if current_user.is_authenticated:
-            is_authenticated = True
             if len(id_rent_books) != 0:
                 for id in id_rent_books:
                     book = Book.query.get(int(id))
-                    print(f"Book to add: {book}")
-                    book.user_id = int(current_user.id)
-            db.session.commit()
+                    if book.user_id != None:
+                        book.user_id = int(current_user.id)
+                        succesfull_rent = True
+                    else:
+                        succesfull_rent = False
+                db.session.commit()
+            else:
+                no_books = True
     except Exception as e:
         error = True
         print(e)
@@ -178,7 +184,7 @@ def rent():
     finally:
         db.session.close()
 
-    return jsonify({"Hola": "Chau"})
+    return jsonify({"noBooks": no_books, "succesfullRent": succesfull_rent})
 
 
 @app.route("/")
@@ -308,11 +314,8 @@ def add_book_new():
             book_already_exists = True
             pass
         else:
-            # book = Book(ISBN=ISBN, title=title, subject=subject, language=language, number_of_pages=numberOfPages,
-                        # publication_date=publicationDate, publisher=publisher, price=price)
-
             book = Book(ISBN=ISBN, title=title, subject=subject, language=language, number_of_pages=numberOfPages,
-                        publication_date=publicationDate, publisher=publisher, price=price, author_id=author_id)
+                        publication_date=publicationDate, publisher=publisher, price=price, due_date=None, borrowed_date=None, author_id=author_id)
             db.session.add(book)
             db.session.commit()
     except Exception as e:
