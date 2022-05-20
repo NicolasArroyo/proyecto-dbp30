@@ -24,12 +24,12 @@
         {% endif %}
 
         {% if current_user.is_authenticated == True %}
-        <a href="/settings">
-            <button> Settings</button>
-        </a>
+            <a href="/settings">
+                <button> Settings</button>
+            </a>
         {% endif %}
 
-        {% if current_user.is_authenticated == True%}
+        {% if current_user.is_authenticated == True %}
             <div class="search-wrapper">
                 <input type="search" placeholder="Search..." name="search" id="to-search" required>
             </div>
@@ -56,9 +56,12 @@
         {% endif %}
 
         {% if current_user.is_authenticated == True and current_user.is_admin == True %}
-        <a href="/add_book">
-            <button> Add a book</button>
-        </a>
+            <a href="/add_book">
+                <button> Add a book</button>
+            </a>
+            <a href="/add_author">
+                <button> Add an author</button>
+            </a>
         {% endif %}
     </div>
 

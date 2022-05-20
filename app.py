@@ -279,7 +279,6 @@ def add_book():
 
 @app.route("/add_book/new", methods=["POST"])
 def add_book_new():
-
     book_already_exists = False
     error = False
     try:
@@ -314,6 +313,41 @@ def add_book_new():
         abort(500)
     else:
         return jsonify({"book_already_exists": book_already_exists})
+
+@app.route("/add_author")
+def add_author():
+    return render_template("add_author.html")
+
+
+@app.route("/add_author/new", methods=["POST"])
+def add_author_new():
+    author_already_exists = False
+    error = False
+    try:
+        requestData = request.get_json()
+        name = requestData["name"]
+        dob = requestData["dob"]
+
+        q = db.session.query(Author.id).filter(Author.name == name and Author.dob == dob)
+        if (db.session.query(q.exists()).scalar()):
+            author_already_exists = True
+            pass
+        else:
+            author = Author(name=name, dob=dob)
+            db.session.add(author)
+            db.session.commit()
+    except Exception as e:
+        error = True
+        print(e)
+        print(sys.exc_info())
+        db.session.rollback()
+    finally:
+        db.session.close()
+
+    if error:
+        abort(500)
+    else:
+        return jsonify({"author_already_exists": author_already_exists})
 
 
 # Error handling
