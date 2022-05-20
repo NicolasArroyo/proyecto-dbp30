@@ -10,7 +10,8 @@
     <body>
         <h1 style="color: white"> Register </h1>
         <div class="container">
-            <form id="dataForm">
+            <form id="dataForm" method="POST" action="">
+                {{ form.hidden_tag() }}
                 <label style="color: white" for="firstName"><b> First name </b></label>
                 <input type="text" placeholder="Enter your first name" name="firstName" id="firstName" required
                        class="input">

@@ -1,7 +1,3 @@
-from ast import Sub
-import json
-import re
-from typing import final
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -10,12 +6,14 @@ from flask_wtf import FlaskForm
 from importlib_metadata import method_cache
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
+from flask_bcrypt import Bcrypt
 import sys
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
+Bcrypt = Bcrypt(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -88,6 +86,27 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField('Login')
 
+class RegisterForm(FlaskForm):
+    firstName = StringField(validators=[
+                           InputRequired()])
+    lastName = StringField(validators=[
+                           InputRequired()])
+    username = StringField(validators=[
+                           InputRequired()])
+    password = PasswordField(validators=[
+                             InputRequired()])
+    email = StringField(validators=[
+                           InputRequired()])
+
+    def validate_username(self, username):
+        existing_user_username = Account.query.filter_by(username=username.data).first()
+        if existing_user_username:
+            raise ValidationError('That username already exists. Please choose a different one.')
+
+    def validate_email(self, email):
+        user = Account.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('That email is taken. Please choose a different one.')
 
 @app.route('/home')
 def home():
@@ -149,46 +168,34 @@ def index():
     return redirect(url_for('home'))
 
 
-@app.route("/register")
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template('register.html')
-
-
-@app.route("/register/newUser", methods=['POST'])
-def registerNewUser():
-    user_already_exists = False
     error = False
     try:
-        requestData = request.get_json()
-        firstName = requestData["firstName"]
-        lastName = requestData["lastName"]
-        username = requestData["username"]
-        password = requestData["password"]
-        email = requestData["email"]
-
-        q = db.session.query(Account.id).filter(Account.username == username)
-        if (db.session.query(q.exists()).scalar()):
-            user_already_exists = True
-            pass
-        else:
-            account = Account(first_name=firstName, last_name=lastName, username=username, password=password,
-                              number_of_sanctions=0, is_active=True, email=email, is_admin=False)
-            db.session.add(account)
+        form = RegisterForm()
+        if form.validate_on_submit():
+            hashed_password = Bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            new_user = Account(first_name=form.firstName.data, 
+            last_name=form.lastName.data, 
+            number_of_sanctions=0,is_active=True,
+            username=form.username.data, 
+            password=hashed_password, 
+            email=form.email.data,
+            is_admin=False)
+            db.session.add(new_user)
             db.session.commit()
+            return redirect(url_for('login'))
     except Exception as e:
         error = True
         print(e)
         print(sys.exc_info())
-        db.session.rollback()
-    finally:
-        db.session.close()
     if error:
         abort(500)
     else:
-        return jsonify({"user_already_exists": user_already_exists})
+        return render_template('register.html', form=form)
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     error = False
     try:
@@ -197,10 +204,11 @@ def login():
             user = Account.query.filter_by(username=form.username.data).first()
             if user is not None:
                 if user:
-                    password = Account.query.filter_by(password=form.password.data).first()
-                    if password:
+                    if Bcrypt.check_password_hash(user.password, form.password.data):
                         login_user(user)
                         return redirect(url_for('home'))
+                else:
+                    flash("Invalid password!", "error")        
     except Exception as e:
         error = True
         print(e)
@@ -227,48 +235,32 @@ def settings():
 
 @app.route("/settings/newPassword", methods=['POST'])
 def update_password():
-    correct_username_password = True
     try:
-        requestData = request.get_json()
-        username = requestData["username"]
-        new_password = requestData["newPassword"]
-        current_password = requestData["password"]
-        q = db.session.query(Account.id).filter(Account.username == username, Account.password == current_password)
-        if (db.session.query(q.exists()).scalar()):
-            account = Account.query.filter_by(username=username, password=current_password).first()
-            account.password = new_password
+        if request.method == "POST":
+            newPassword = request.form.get("newPassword")
+            user_id = current_user.id
+            newHash = Bcrypt.generate_password_hash(newPassword).decode('utf-8')
+            account = Account.query.filter_by(id=user_id).first()
+            account.password = newHash 
             db.session.commit()
-        else:
-            correct_username_password = False
     except:
         db.session.rollback()
-    finally:
-        db.session.close()
 
-    return jsonify({"correctUsernamePassword": correct_username_password})
+    return redirect(url_for('home')) 
 
 
 @app.route("/settings/deleteUser", methods=["POST"])
 def delete_user():
-    correct_username_password = True
     try:
-        requestData = request.get_json()
-        username = requestData["username"]
-        password = requestData["password"]
-        account_to_delete = Account.query.filter_by(username=username, password=password).first()
-
-        q = db.session.query(Account.id).filter(Account.username == username, Account.password == password)
-        if (db.session.query(q.exists()).scalar()):
-            db.session.delete(account_to_delete)
-            db.session.commit()
-        else:
-            correct_username_password = False
+        user_id = current_user.id
+        account_to_delete = Account.query.filter_by(id = user_id).first()
+        db.session.delete(account_to_delete)
+        db.session.commit()
     except:
         db.session.rollback()
     finally:
         db.session.close()
-
-    return jsonify({"correctUsernamePassword": correct_username_password})
+        return render_template("home.html")
 
 
 @app.route("/add_book")

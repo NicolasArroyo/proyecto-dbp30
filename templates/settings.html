@@ -11,36 +11,17 @@
         <h2>Settings</h2>
         <br>
         <div>
-            <form id="newpassword-form">
+            <form id="newpassword-form" method="POST" action="/settings/newPassword">
                 <h3>Update password</h3>
-                <label for="" style="color: white">Enter your username</label>
-                <input type="text" id="username" required>
-
-                <label for="passwordToDelete" style="color: white">Enter your current password</label>
-                <input type="password" id="passwordToChange" required>
-                <div id="username-password-error" class="hidden">
-                    <p style="color: red; font-size: 24px;">Incorrect username or password!</p>
-                </div>
-
                 <label for="" style="color: white">Enter new password</label>
-                <input type="password" id="new-password" required>
+                <input type="password" id="new-password" name="newPassword" required>
                 <button type="submit" value="Change">Change password</button>
             </form>
         </div>
 
         <div>
-            <form id="delete-form">
+            <form id="delete-form" method="POST" action="/settings/deleteUser">
                 <h3>Delete account</h3>
-                <label for="usernameToDelete" style="color: white">Enter your username</label>
-                <input type="text" id="usernameToDelete" required>
-
-                <label for="passwordToDelete" style="color: white">Enter your password</label>
-                <input type="password" id="passwordToDelete" required>
-
-                <div id="username-password-error-delete" class="hidden">
-                    <p style="color: red; font-size: 24px;">Incorrect username or password!</p>
-                </div>
-
                 <button type="submit" id="deleteAccountBtn">Delete Account</button>
             </form>
         </div>
