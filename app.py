@@ -273,7 +273,7 @@ def delete_user():
 
 @app.route("/add_book")
 def add_book():
-    return render_template("add_book.html")
+    return render_template("add_book.html", authors=Author.query.all())
 
 
 @app.route("/add_book/new", methods=["POST"])
@@ -290,14 +290,18 @@ def add_book_new():
         publicationDate = requestData["publicationDate"]
         publisher = requestData["publisher"]
         price = requestData["price"]
+        author_id = requestData["author_id"]
 
         q = db.session.query(Book.id).filter(Book.ISBN == ISBN)
         if (db.session.query(q.exists()).scalar()):
             book_already_exists = True
             pass
         else:
+            # book = Book(ISBN=ISBN, title=title, subject=subject, language=language, number_of_pages=numberOfPages,
+                        # publication_date=publicationDate, publisher=publisher, price=price)
+
             book = Book(ISBN=ISBN, title=title, subject=subject, language=language, number_of_pages=numberOfPages,
-                        publication_date=publicationDate, publisher=publisher, price=price)
+                        publication_date=publicationDate, publisher=publisher, price=price, author_id=author_id)
             db.session.add(book)
             db.session.commit()
     except Exception as e:
