@@ -94,12 +94,25 @@ document.getElementById('submit-rent').onsubmit = function(e) {
             document.getElementById("no-books-error").className = "hidden";
         }
 
+        // Reset all errors
+        document.getElementById("succesfull-message").className = "hidden";
+        document.getElementById("succesfull-error").className = "hidden";
+        document.getElementById("succesfull-error-current_user").className = "hidden";
+
         // Check if the rent was succesfull or not
         if (jsonResponse["succesfullRent"] === true) {
-            console.log("Your books have been rented succcesfully.")
+            document.getElementById("succesfull-message").className = "";
+        }
+        else if (jsonResponse["succesfullRent"] === true && jsonResponse["alreadyRentedByCurrentUser"] === false) {
+            document.getElementById("succesfull-error").className = "";
+        }
+
+        // Check if the current_user already rented the book
+        if (jsonResponse["alreadyRentedByCurrentUser"] === true) {
+            document.getElementById("succesfull-error-current_user").className = "";
         }
         else {
-            console.log("This book is already rented")
+            document.getElementById("succesfull-error-current_user").className = "hidden";
         }
     });
 } 

@@ -40,7 +40,9 @@
                 <h2>Shopping Cart</h2>
                 <div class="book-cards" data-book-cards-container id="card">
                 </div>
+
                 <br>
+                
                 <form id="submit-rent">
                     <button type="submit">Rent</button>
                 </form>
@@ -50,6 +52,19 @@
                 <div id="no-books-error" class="hidden">
                     <p style="color: red; font-size: 24px;">There are no books to rent!</p>
                 </div>
+
+                <div id="succesfull-message" class="hidden">
+                    <p style="color: red; font-size: 24px;">Succesfull rent!</p>
+                </div>
+
+                <div id="succesfull-error" class="hidden">
+                    <p style="color: red; font-size: 24px;">Already rented!</p>
+                </div>
+
+                <div id="succesfull-error-current_user" class="hidden">
+                    <p style="color: red; font-size: 24px;">Already rented by you!</p>
+                </div>
+
             </div>
 
             <template data-book-template>

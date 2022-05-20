@@ -155,8 +155,9 @@ def search():
 @app.route("/home/rent", methods=["POST"])
 def rent():
     error = False
-    no_books = True
+    no_books = False
     succesfull_rent = False
+    already_rented_by_current_user = False
     try:
         requestData = request.get_json()
         id_rent_books = requestData["idBooksToRent"]
@@ -168,9 +169,11 @@ def rent():
             if len(id_rent_books) != 0:
                 for id in id_rent_books:
                     book = Book.query.get(int(id))
-                    if book.user_id != None:
+                    if book.user_id == None:
                         book.user_id = int(current_user.id)
                         succesfull_rent = True
+                    elif book.user_id == current_user.id:
+                        already_rented_by_current_user = True
                     else:
                         succesfull_rent = False
                 db.session.commit()
@@ -184,7 +187,7 @@ def rent():
     finally:
         db.session.close()
 
-    return jsonify({"noBooks": no_books, "succesfullRent": succesfull_rent})
+    return jsonify({"noBooks": no_books, "succesfullRent": succesfull_rent, "alreadyRentedByCurrentUser": already_rented_by_current_user})
 
 
 @app.route("/")
