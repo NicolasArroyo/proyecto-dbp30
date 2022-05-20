@@ -1,4 +1,4 @@
-# Nombre del proyecto: A book for you
+# A book for you
 
 ## Integrantes
 
@@ -25,12 +25,14 @@ Ser la librería líder en el Perú en la venta y distribución de libros de tex
 - flask_migrate
 - flask_login
 - flask_wtf
+- flask_bcrypt
 - wtforms
 - wtforms.validators
 - sys
 - pickle
 - pytest
 - jinja
+- datetime
 
 ## Frameworks
 No se utilizaron frameworks
@@ -41,21 +43,32 @@ No se utilizaron plugins
 ## Endpoints
 - '/': Index
 - '/home': Muestra la pagina principal de la aplicación con los botones Log in, Sign up y Settings.
+- '/home/search': Endpoint en el que se obtiene los ids de cada libro para buscarlos.
+- '/home/rent': Se hace un POST de los libros por rentar de un usuario.
 - '/register': Pagina para registrarse
 - '/register/newUser': Se envia la informacion mediante un fetch de un nuevo usuario.
 - '/login': Iniciar sesión
 - '/logout': Cerrar sesión
-- '/settings': Configuracion para cambiar nombre de usuario y password.
-- 'settings/newPassword': Se envia la informacion mediante un fetch de una nueva password.
-- 'settings/deleteUser':  Se envia la informacion de la eliminacion de un usuario.
+- '/settings': Configuracion para cambiar nombre de usuario y borrar tu usuario.
+- 'settings/newPassword': Se envia la nueva password del usuario logeado a la base de datos.
+- 'settings/deleteUser':  Se envia la informacion de la eliminacion de un usuario a la base de datos.
+- '/add_book': Renderiza el template add_book.html
+- '/add_book/new': Endpoint al que se postea un nuevo libro agregado por un administrador.
+- '/add_author': Renderiza el template add_author.html
+- '/add_author/new': Endpoint al que se postea un nuevo autor agregado por un administrador.
 
 ## Forma de autenticacion
 Usamos Flask-Login para poder manejar y authenticar la sesion actual del usuario. Con Flask-WTForms mandamos un formulario para que el backend se comunique con la base de datos.
 
 ## Host
-localhost:5432
+http://127.0.0.1:5001/
+localhost: 5432
+port: 5001
 
 ## Manejo de errores
-500: Errores en el Servidor
+- 401: Unauthorized (informacion entregada invalida)
+- 403: Forbidden (falta de permisos para acceder a la pagina)
+- 404: Not found (pagina no encontrada)
+- 500: Internal server error (Error de servidor)
 
 ## Ejecutar el archivo `app.py`
