@@ -88,6 +88,8 @@ input {
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: .25rem;
   margin-top: 1rem;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .card {

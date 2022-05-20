@@ -272,6 +272,7 @@ def delete_user():
 
 
 @app.route("/add_book")
+@login_required
 def add_book():
     return render_template("add_book.html", authors=Author.query.all())
 
@@ -318,6 +319,7 @@ def add_book_new():
         return jsonify({"book_already_exists": book_already_exists})
 
 @app.route("/add_author")
+@login_required
 def add_author():
     return render_template("add_author.html")
 
