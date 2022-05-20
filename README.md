@@ -61,9 +61,9 @@ No se utilizaron plugins
 Usamos Flask-Login para poder manejar y authenticar la sesion actual del usuario. Con Flask-WTForms mandamos un formulario para que el backend se comunique con la base de datos.
 
 ## Host
-http://127.0.0.1:5001/
-localhost: 5432
-port: 5001
+- http://127.0.0.1:5001/
+- localhost: 5432
+- port: 5001
 
 ## Manejo de errores
 - 401: Unauthorized (informacion entregada invalida)
