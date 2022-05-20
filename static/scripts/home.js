@@ -41,10 +41,12 @@ fetch("/home/search", {
         const header = card.querySelector("[data-header]");
         const price = card.querySelector("[data-price]");
         const body = card.querySelector("[data-body]");
+        const dueDate = card.querySelector("[data-due-date]");
 
         header.textContent = book.title
         price.textContent = "S/ " + book.price;
         body.textContent = book.id;
+        dueDate.textContent = "Due date: 7 days from now";
 
         if (!cardIsInCardContainer(card)) {
             bookCardContainer.append(card);

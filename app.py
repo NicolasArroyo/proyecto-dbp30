@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from flask import Flask, flash, render_template, request, redirect, url_for, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -173,6 +173,7 @@ def rent():
                     if book.user_id == None:
                         book.user_id = int(current_user.id)
                         book.borrowed_date = date.today()
+                        book.due_date = date.today() + timedelta(days=7)
                         succesfull_rent = True
                     elif book.user_id == current_user.id:
                         already_rented_by_current_user = True
