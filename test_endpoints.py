@@ -87,11 +87,11 @@ class Flask_Tets_Routes(unittest.TestCase):
 
     """
     Se implementara mas adelante, ya que se desea una mayor interaccion cone estos endpoints
-    def test_settings_deleteUser():
     def test_addBook():
     def test_addBook_new():
     def test_addAuthor():
-    def test_addAuthor_new():"""
+    def test_addAuthor_new():
+    """
 
 if __name__ == "__main__":
     unittest.main()
