@@ -15,6 +15,9 @@
                 <ul>
                     <li><a href="/home">Homepage</a></li>
                     <li><a href="#">Contact</a></li>
+                    {% if current_user.is_authenticated == True %}
+                    <li><a href="/logout">Log out</a></li>
+                    {% endif %}
                 </ul>
             </div>
             {% endblock %}
