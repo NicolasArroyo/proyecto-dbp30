@@ -1,5 +1,4 @@
 from ast import Sub
-from crypt import methods
 import json
 import re
 from typing import final
@@ -14,7 +13,7 @@ from wtforms.validators import InputRequired, Length, ValidationError
 import sys
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:mynewpassword@localhost:5432/project_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:1234@localhost:5432/project_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 
@@ -24,6 +23,7 @@ migrate = Migrate(app, db)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -39,10 +39,12 @@ class Account(db.Model, UserMixin):
     number_of_sanctions = db.Column(db.Integer, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False)
     email = db.Column(db.String, nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False)
 
     books = db.relationship("Book", backref="account")
 
-    def __init__ (self, first_name : str, last_name : str, username : str, password : str, number_of_sanctions : int, is_active : bool, email : str):
+    def __init__(self, first_name: str, last_name: str, username: str, password: str, number_of_sanctions: int,
+                 is_active: bool, email: str, is_admin: bool):
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
@@ -50,6 +52,7 @@ class Account(db.Model, UserMixin):
         self.number_of_sanctions = number_of_sanctions
         self.is_active = is_active
         self.email = email
+        self.is_admin = is_admin
 
 
 class Book(db.Model):
@@ -75,19 +78,21 @@ class Author(db.Model):
     dob = db.Column(db.Date, nullable=False)
     books = db.relationship("Book", backref="author")
 
-    
+
 class LoginForm(FlaskForm):
     username = StringField(validators=[
-                           InputRequired()])
+        InputRequired()])
 
     password = PasswordField(validators=[
-                             InputRequired()])
+        InputRequired()])
 
     submit = SubmitField('Login')
+
 
 @app.route('/home')
 def home():
     return render_template('home.html')
+
 
 @app.route("/home/search", methods=["GET"])
 def search():
@@ -107,6 +112,7 @@ def search():
         abort(500)
     else:
         return jsonify(response)
+
 
 @app.route("/home/rent", methods=["POST"])
 def rent():
@@ -134,13 +140,14 @@ def rent():
         db.session.rollback()
     finally:
         db.session.close()
-        
-        
+
     return jsonify({"Hola": "Chau"})
+
 
 @app.route("/")
 def index():
     return redirect(url_for('home'))
+
 
 @app.route("/register")
 def register():
@@ -165,7 +172,7 @@ def registerNewUser():
             pass
         else:
             account = Account(first_name=firstName, last_name=lastName, username=username, password=password,
-                              number_of_sanctions=0, is_active=True, email=email)
+                              number_of_sanctions=0, is_active=True, email=email, is_admin=False)
             db.session.add(account)
             db.session.commit()
     except Exception as e:
@@ -175,7 +182,7 @@ def registerNewUser():
         db.session.rollback()
     finally:
         db.session.close()
-    
+
     if error:
         abort(500)
     else:
@@ -212,10 +219,12 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
 @app.route("/settings")
 @login_required
 def settings():
     return render_template("settings.html")
+
 
 @app.route("/settings/newPassword", methods=['POST'])
 def update_password():
@@ -259,26 +268,75 @@ def delete_user():
         db.session.rollback()
     finally:
         db.session.close()
-    
+
     return jsonify({"correctUsernamePassword": correct_username_password})
+
+
+@app.route("/add_book")
+def add_book():
+    return render_template("add_book.html")
+
+
+@app.route("/add_book/new", methods=["POST"])
+def add_book_new():
+
+    book_already_exists = False
+    error = False
+    try:
+        requestData = request.get_json()
+        ISBN = requestData["ISBN"]
+        title = requestData["title"]
+        subject = requestData["subject"]
+        language = requestData["language"]
+        numberOfPages = requestData["numberOfPages"]
+        publicationDate = requestData["publicationDate"]
+        publisher = requestData["publisher"]
+        price = requestData["price"]
+
+        q = db.session.query(Book.id).filter(Book.ISBN == ISBN)
+        if (db.session.query(q.exists()).scalar()):
+            book_already_exists = True
+            pass
+        else:
+            book = Book(ISBN=ISBN, title=title, subject=subject, language=language, number_of_pages=numberOfPages,
+                        publication_date=publicationDate, publisher=publisher, price=price)
+            db.session.add(book)
+            db.session.commit()
+    except Exception as e:
+        error = True
+        print(e)
+        print(sys.exc_info())
+        db.session.rollback()
+    finally:
+        db.session.close()
+
+    if error:
+        abort(500)
+    else:
+        return jsonify({"book_already_exists": book_already_exists})
+
 
 # Error handling
 @app.errorhandler(401)
 def unauthorized(e):
     return render_template("401.html")
 
+
 @app.errorhandler(403)
 def forbidden(e):
     return render_template("403.html")
+
 
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html")
 
+
 @app.errorhandler(500)
 def server_error(e):
     app.logger.error(f"Server error: {e}, route: {request.url}")
     return render_template("500.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)

@@ -11,45 +11,59 @@
     <div class="home-content">
         <h1>A BOOK FOR YOU</h1>
         <p> La mejor librería del mundo </p>
-        <a href='/register'>
-            <button> Register</button>
-        </a>
+        {% if current_user.is_authenticated == False %}
+            <a href='/register'>
+                <button> Register</button>
+            </a>
+        {% endif %}
 
-        <a href='/login'>
-            <button> Login</button>
-        </a>
+        {% if current_user.is_authenticated == False %}
+            <a href='/login'>
+                <button> Login</button>
+            </a>
+        {% endif %}
 
+        {% if current_user.is_authenticated == True %}
         <a href="/settings">
             <button> Settings</button>
         </a>
+        {% endif %}
 
-        <div class="search-wrapper">
-            <input type="search" placeholder="Search..." name="search" id="to-search" required>
-        </div>
-
-        <br><br>
-
-        <div id="shopping-cart">
-            <h2>Shopping Cart</h2>
-            <div class="book-cards" data-book-cards-container id="card">
+        {% if current_user.is_authenticated == True%}
+            <div class="search-wrapper">
+                <input type="search" placeholder="Search..." name="search" id="to-search" required>
             </div>
-            <br>
-            <form id="submit-rent">
-                <button type="submit">Rent</button>
-            </form>
-        </div>
 
-        <template data-book-template>
-          <div class="card">
-            <div class="header" data-header></div>
-            <div class="body" data-body></div>
-            Rent <input type="checkbox" class="rent-button" data-rent-button>
-          </div>
-        </template>
+            <br><br>
+
+            <div id="shopping-cart">
+                <h2>Shopping Cart</h2>
+                <div class="book-cards" data-book-cards-container id="card">
+                </div>
+                <br>
+                <form id="submit-rent">
+                    <button type="submit">Rent</button>
+                </form>
+            </div>
+
+            <template data-book-template>
+                <div class="card">
+                    <div class="header" data-header></div>
+                    <div class="body" data-body></div>
+                    Rent <input type="checkbox" class="rent-button" data-rent-button>
+                </div>
+            </template>
+        {% endif %}
+
+        {% if current_user.is_authenticated == True and current_user.is_admin == True %}
+        <a href="/add_book">
+            <button> Add a book</button>
+        </a>
+        {% endif %}
     </div>
 
     {% block scripts %}
-        <script src="{{url_for('static', filename='/scripts/home.js')}}"></script>
+        <script src="{{ url_for('static', filename='/scripts/home.js') }}"></script>
     {% endblock scripts %}
 
 {% endblock %}
