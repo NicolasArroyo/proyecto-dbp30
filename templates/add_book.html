@@ -28,22 +28,32 @@
                        class="input">
 
                 <label style="color: white" for="number_of_pages"><b> Number of pages </b></label>
-                <input type="number" placeholder="Enter the number of pages" name="number_of_pages" id="number_of_pages" required class="input">
+                <input type="number" placeholder="Enter the number of pages" name="number_of_pages" id="number_of_pages"
+                       required class="input">
 
                 <label style="color: white" for="publication_date"><b> Publication date </b></label>
-                <input type="date" placeholder="Enter the publication date" name="publication_date" id="publication_date" required class="input">
+                <input type="date" placeholder="Enter the publication date" name="publication_date"
+                       id="publication_date" required class="input">
 
                 <label style="color: white" for="publisher"><b> Publisher </b></label>
-                <input type="text" placeholder="Enter the publisher" name="publisher" id="publisher" required class="input">
+                <input type="text" placeholder="Enter the publisher" name="publisher" id="publisher" required
+                       class="input">
 
                 <label style="color: white" for="price"><b> Price </b></label>
                 <input type="number" placeholder="Enter the price" name="price" id="price" required class="input">
+
+                <label style="color: white" for="author"><b> Author </b></label>
+                <select name="author" id="author" required class="input">
+                    {% for author in authors %}
+                    <option value="{{ author.id }}" class="author-option">{{ author.name }}</option>
+                    {% endfor %}
+                </select>
 
                 <div id="add-book-error" class="hidden">
                     <p style="color: red; font-size: 24px;">Book already exists!</p>
                 </div>
 
-                <button type="submit" class="addBookButton">Add book </button>
+                <button type="submit" class="addBookButton">Add book</button>
 
                 <div id="server-error" class="hidden">
                     <p style="color: red; font-size: 24px;">Something went wrong! Try it later!</p>
@@ -52,7 +62,7 @@
             </form>
 
             {% block scripts %}
-            <script src="{{url_for('static', filename='/scripts/add_book.js')}}"></script>
+                <script src="{{ url_for('static', filename='/scripts/add_book.js') }}"></script>
             {% endblock scripts %}
 
         </div>
