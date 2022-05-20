@@ -41,10 +41,12 @@ fetch("/home/search", {
         const header = card.querySelector("[data-header]");
         const price = card.querySelector("[data-price]");
         const body = card.querySelector("[data-body]");
+        const authorName = card.querySelector("[data-author-name]");
         const dueDate = card.querySelector("[data-due-date]");
 
-        header.textContent = book.title
-        price.textContent = "S/ " + book.price;
+        header.textContent = "Title: " + book.title
+        authorName.textContent = "Author: " + book.authorName
+        price.textContent = "Price: S/ " + book.price;
         body.textContent = book.id;
         dueDate.textContent = "Due date: 7 days from now";
 

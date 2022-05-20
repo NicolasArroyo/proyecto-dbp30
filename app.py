@@ -140,7 +140,8 @@ def search():
         # Obtain all the books from the database and send it to js
         books = Book.query.order_by("id").all()
         for book in books:
-            response.append({"id": book.id, "title": book.title, "price": book.price})
+            author_name = Author.query.get(int(book.author_id)).name
+            response.append({"id": book.id, "title": book.title, "price": book.price, "authorName": author_name})
     except Exception as e:
         error = True
         print(e)
@@ -161,10 +162,6 @@ def rent():
     try:
         requestData = request.get_json()
         id_rent_books = requestData["idBooksToRent"]
-        # Ahora que ya tenemos los ids de los libros por rentar seria cuestion
-        # de agregarlos a la cuenta de la persona que desea comprar
-        # Mandar mensaje en caso su renta haya sido existosa
-        # Mandar un mensaje en caso no haya sido posible hacer la renta porque no esta logeado o el libro ya esta rentado
         if current_user.is_authenticated:
             if len(id_rent_books) != 0:
                 for id in id_rent_books:
